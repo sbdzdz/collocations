@@ -15,6 +15,6 @@ module Morfeusz
 
   def Morfeusz.get_forms(word)
     ptr = analyse(word)
-    forms = (0..5).map{|i| Edge.new(ptr+Edge.size*i)}.take_while{|edge| edge.i != -1}
+    (0..5).map{|i| Edge.new(ptr+Edge.size*i)}.take_while{|edge| edge.i != -1}.to_a
   end
 end
