@@ -1,8 +1,9 @@
 require 'nice-ffi'
-require 'ffi'
 
 module Morfeusz
   extend NiceFFI::Library
+  load_library 'libmorfeusz'
+  attach_function :analyse, :morfeusz_analyse, [:string], :pointer
   
   class Edge < NiceFFI::Struct
     layout  :j, :int, 
@@ -12,10 +13,8 @@ module Morfeusz
             :tags, :string
   end
 
-  def Morfeusz.analyse(word)
-    load_library './libmorfeusz.so'
-    attach_function :analyse, :morfeusz_analyse, [:string], :pointer
+  def Morfeusz.get_forms(word)
     ptr = analyse(word)
-    edges = (0..5).map{|i| Morfeusz::Edge.new(ptr+Morfeusz::Edge.size*i)}.take_while{|edge| edge.i != -1}
+    forms = (0..5).map{|i| Edge.new(ptr+Edge.size*i)}.take_while{|edge| edge.i != -1}
   end
 end
